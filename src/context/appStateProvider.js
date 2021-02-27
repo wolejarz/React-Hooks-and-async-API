@@ -8,9 +8,20 @@ const AppStateProvider = (props) => {
     channels: [],
     videos: [],
     selectedVideo: "",
-    hiddenOrWatchVideos: [],
+    hiddenOrWatchedVideos: [],
   };
   const [state, dispatch] = useReducer(AppReducer, initialState);
-  return <AppContext.Provider>{props.children}</AppContext.Provider>;
+  return (
+    <AppContext.Provider
+      value={{
+        channels: state.channels,
+        videos: state.videos,
+        selectedVideo: state.selectedVideo,
+        hiddenOrWatchedVideo: this.state.hiddenOrWatchedVideos,
+      }}
+    >
+      {props.children}
+    </AppContext.Provider>
+  );
 };
 export default AppStateProvider;
