@@ -1,25 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import AppStateProvider from './context/appStateProvider';
+import ChannelList from './components/channelList';
+import FetchBar from './components/fetchBar';
+import VideoDetails from './components/videoDetails';
+import VideoList from './components/videoList';
 
-function App() {
+import "./styles/App.css";
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+  <AppStateProvider>
+<div>
+  <ChannelList/>
+</div>
+<div>
+  <FetchBar/>
+</div>
+<div>
+  <VideoList/>
+</div>
+<div>
+  <VideoDetails/>
+</div>
+  </AppStateProvider>;
+  )}
 
 export default App;
