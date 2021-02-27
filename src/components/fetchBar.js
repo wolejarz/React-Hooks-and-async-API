@@ -1,6 +1,6 @@
 import React from "react";
 
 const FetchBar = () => {
-  return <div></div>;
+  return <div>Fetch Data Button</div>;
 };
 export default FetchBar;

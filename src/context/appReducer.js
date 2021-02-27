@@ -3,6 +3,7 @@ import {
   SELECT_CHANNEL,
   GET_VIDEOS,
   SELECT_VIDEO,
+  HIDE_VIDEO,
 } from "./types";
 
 const AppReducer = (state, action) => {
@@ -20,6 +21,10 @@ const AppReducer = (state, action) => {
         ...state,
       };
     case SELECT_VIDEO:
+      return {
+        ...state,
+      };
+    case HIDE_VIDEO:
       return {
         ...state,
       };
