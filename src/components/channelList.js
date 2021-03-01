@@ -7,13 +7,10 @@ import { Grid } from "@material-ui/core";
 const ChannelList = () => {
   const appContext = useContext(AppContext);
   const { channels, handleGetChannels } = appContext;
-  const listChannels =
-    channels === "undefined" || channels === null ? (
-      "XXX"
-    ) : (
-      <ChannelItem id={0} channel={channels[0]} />
-    );
 
+  const listChannels = channels.map((current, id) => id);
+  console.log(channels);
+  console.log(listChannels);
   useEffect(() => {
     handleGetChannels();
   }, []);
