@@ -1,20 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import AppContext from "../context/appContext";
 import ChannelItem from "./channelItem";
 import { Grid } from "@material-ui/core";
 
 const ChannelList = () => {
   const appContext = useContext(AppContext);
-  const { channels, handleGetChannels } = appContext;
+  const { channels } = appContext;
+  const listChannels = channels.map((current, id) => (
+    <ChannelItem key={id} channel={current} id={id} />
+  ));
 
-  const listChannels = channels.map((current, id) => id);
-  console.log(channels);
-  console.log(listChannels);
-  useEffect(() => {
-    handleGetChannels();
-  }, []);
-
-  return <div>{listChannels}</div>;
+  return <div>{listChannels} </div>;
 };
 export default ChannelList;

@@ -14,14 +14,24 @@ const AppReducer = (state, action) => {
         channels: action.payload,
       };
     }
-    case SELECT_CHANNEL:
+    //toggles selection of N-th (action.payload) channel
+    case SELECT_CHANNEL: {
+      const channelWithNewState = {
+        ...state.channels[action.payload],
+        selected: !state.channels[action.payload].selected,
+      };
       return {
         ...state,
+        channels: state.channels.map((channel, id) =>
+          id === action.payload ? channelWithNewState : channel
+        ),
       };
+    }
     case GET_VIDEOS:
       return {
         ...state,
       };
+
     case SELECT_VIDEO:
       return {
         ...state,

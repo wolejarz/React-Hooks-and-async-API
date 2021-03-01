@@ -1,8 +1,8 @@
-import React, { useReducer } from "react";
+import React, { useEffect, useReducer } from "react";
 
 import AppContext from "./appContext";
 import AppReducer from "./appReducer";
-import { GET_CHANNELS, GET_VIDEOS, APIKey } from "./types";
+import { GET_CHANNELS, GET_VIDEOS, APIKey, SELECT_CHANNEL } from "./types";
 
 const AppStateProvider = (props) => {
   const initialState = {
@@ -13,13 +13,14 @@ const AppStateProvider = (props) => {
   };
   const [state, dispatch] = useReducer(AppReducer, initialState);
   //Select/Unselect channel from list
-  const handleSelectChannel = (id) => {};
-
+  const handleSelectChannel = (id) => {
+    dispatch({ type: SELECT_CHANNEL, payload: id });
+  };
   //Load channels from  source
-  const handleGetChannels = () => {
+  const handleGetChannels = async function () {
     const channels_ids = [
-      "UCVTyTA7-g9nopHeHbeuvpRA",
-      "UCwWhs_6x42TyRM4Wstoq8HA",
+      //   "UCVTyTA7-g9nopHeHbeuvpRA",
+      //   "UCwWhs_6x42TyRM4Wstoq8HA",
       "UCMtFAi84ehTSYSE9XoHefig",
     ];
     const requests = channels_ids.map((id) =>
@@ -27,18 +28,20 @@ const AppStateProvider = (props) => {
         `https://youtube.googleapis.com/youtube/v3/channels?part=snippet&id=${id}&maxResults=1&key=${APIKey}`
       )
     );
-    const channels = [];
-
-    Promise.all(requests)
-      .then((responses) => Promise.all(responses.map((r) => r.json())))
-      .then((allChannelsData) =>
-        allChannelsData.forEach((channel) =>
-          channels.push(channel.items[0].snippet)
-        )
-      )
-      .then(dispatch({ type: GET_CHANNELS, payload: channels }));
+    const resultChannels = [];
+    const responses = await Promise.all(requests);
+    const responsesInJSON = await Promise.all(responses.map((r) => r.json()));
+    responsesInJSON.forEach((channel) =>
+      resultChannels.push({ selected: true, ...channel.items[0].snippet })
+    );
+    dispatch({ type: GET_CHANNELS, payload: resultChannels });
   };
-
+  //Loads and sorts videos from selected channels
+  const handleGetVideos = async function () {};
+  // loading list of channels when application loads
+  useEffect(() => {
+    handleGetChannels();
+  }, []);
   return (
     <AppContext.Provider
       value={{
@@ -47,7 +50,7 @@ const AppStateProvider = (props) => {
         selectedVideo: state.selectedVideo,
         hiddenOrWatchedVideo: state.hiddenOrWatchedVideos,
         handleSelectChannel,
-        handleGetChannels,
+        handleGetVideos,
       }}
     >
       {props.children}
