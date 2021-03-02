@@ -27,11 +27,15 @@ const AppReducer = (state, action) => {
         ),
       };
     }
-    case GET_VIDEOS:
+    //filter (watched or hidden) videos and add result to list of videos, limit size to 10
+    case GET_VIDEOS: {
+      const newVideosList = state.videos.concat(action.payload);
+      //const newVideoListsorted = newVideoList.
       return {
         ...state,
+        videos: newVideosList,
       };
-
+    }
     case SELECT_VIDEO:
       return {
         ...state,

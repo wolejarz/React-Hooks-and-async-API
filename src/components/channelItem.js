@@ -4,7 +4,7 @@ import AppContext from "../context/appContext";
 
 let ChannelItem = ({ channel, id }) => {
   const appContext = useContext(AppContext);
-  const { handleSelectChannel } = appContext;
+  const { handleSelectChannel, handleGetVideos } = appContext;
 
   return (
     <Grid item xs={12}>
@@ -19,7 +19,11 @@ let ChannelItem = ({ channel, id }) => {
         <Typography variant="subtitle1">{channel.title}</Typography>
         <Checkbox
           checked={channel.selected}
-          onChange={() => handleSelectChannel(id)}
+          // onChange={() => handleSelectChannel(id)}
+          onChange={() => {
+            handleSelectChannel(id);
+            handleGetVideos();
+          }}
           inputProps={{ "aria-label": "primary checkbox" }}
         />
       </Paper>
