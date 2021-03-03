@@ -18,16 +18,19 @@ const AppStateProvider = (props) => {
     selectedVideo: null,
     hiddenOrWatchedVideos: [],
   };
+
   const [state, dispatch] = useReducer(AppReducer, initialState);
+
   //Select/Unselect channel from list
   const handleSelectChannel = (id) => {
     dispatch({ type: SELECT_CHANNEL, payload: id });
   };
+
   //Load hardcoded channels descriptions from Youtube API - waits until all parallel async requests are completed
   const handleGetChannels = async function () {
     const channels_ids = [
       //"UCVTyTA7-g9nopHeHbeuvpRA",
-      //"UCwWhs_6x42TyRM4Wstoq8HA",
+      "UCwWhs_6x42TyRM4Wstoq8HA",
       "UCMtFAi84ehTSYSE9XoHefig",
     ];
     const requests = channels_ids.map((id) =>
@@ -47,7 +50,8 @@ const AppStateProvider = (props) => {
     );
     dispatch({ type: GET_CHANNELS, payload: resultChannels });
   };
-  //Loads and sorts videos from selected channels - each selected channel async in parallel
+
+  //Loads, removes hidden or watch and sorts videos from selected channels - each selected channel async in parallel
   const handleGetVideos = function () {
     const allChannelsUnselected = !state.channels.reduce(
       (total, current) => total || current.selected,

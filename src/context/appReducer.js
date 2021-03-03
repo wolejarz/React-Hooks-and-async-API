@@ -15,7 +15,7 @@ const AppReducer = (state, action) => {
         channels: action.payload,
       };
     }
-    //toggles selection of N-th (action.payload) channel
+    //toggles selection of N-th channel
     case SELECT_CHANNEL: {
       const channelWithNewState = {
         ...state.channels[action.payload],
@@ -30,20 +30,26 @@ const AppReducer = (state, action) => {
     }
     //filter (watched or hidden) videos and add result to list of videos, limit size to 10
     case GET_VIDEOS: {
-      const newVideosList = state.videos.concat(action.payload);
-      //const newVideoListsorted = newVideoList.
+      const filteredNewVideos = action.payload.filter((current) =>
+        state.hiddenOrWatchedVideos.indexOf(current.id) === -1 ? true : false
+      );
+      const allUnsortedVideos = state.videos.concat(filteredNewVideos);
       return {
         ...state,
-        videos: newVideosList,
+        videos: allUnsortedVideos
+          .sort((a, b) =>
+            Date.parse(a.publishTime) > Date.parse(b.publishTime) ? -1 : 1
+          )
+          .slice(0, 5),
       };
     }
+
     case CLEAR_VIDEOS:
       return {
         ...state,
         videos: [],
       };
     case SELECT_VIDEO: {
-      console.log(state.hiddenOrWatchedVideos);
       return {
         ...state,
         selectedVideo: action.payload,
@@ -53,7 +59,6 @@ const AppReducer = (state, action) => {
       };
     }
     case HIDE_VIDEO: {
-      console.log(state.hiddenOrWatchedVideos);
       return {
         ...state,
         videos: state.videos.filter(

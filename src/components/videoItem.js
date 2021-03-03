@@ -12,7 +12,9 @@ let VideoItem = ({ video, id }) => {
         alt="thumbnail"
         src={video.thumbnails.medium.url}
       />
-      <span>Title: {video.title}</span>
+      <span>
+        Title: {video.title} Time: {video.publishTime}
+      </span>
       <button onClick={() => handleHideVideo(video)}>Hide Video</button>
     </div>
   );
