@@ -1,14 +1,21 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useReducer } from "react";
 
 import AppContext from "./appContext";
 import AppReducer from "./appReducer";
-import { GET_CHANNELS, GET_VIDEOS, APIKey, SELECT_CHANNEL } from "./types";
+import {
+  GET_CHANNELS,
+  GET_VIDEOS,
+  APIKey,
+  SELECT_CHANNEL,
+  CLEAR_VIDEOS,
+  HIDE_VIDEO,
+} from "./types";
 
 const AppStateProvider = (props) => {
   const initialState = {
     channels: [],
     videos: [],
-    selectedVideo: "",
+    selectedVideo: null,
     hiddenOrWatchedVideos: [],
   };
   const [state, dispatch] = useReducer(AppReducer, initialState);
@@ -16,11 +23,11 @@ const AppStateProvider = (props) => {
   const handleSelectChannel = (id) => {
     dispatch({ type: SELECT_CHANNEL, payload: id });
   };
-  //Load hardcoded channels descriptions from Youtube API - waits for all parallel async requests are completed
+  //Load hardcoded channels descriptions from Youtube API - waits until all parallel async requests are completed
   const handleGetChannels = async function () {
     const channels_ids = [
-      // "UCVTyTA7-g9nopHeHbeuvpRA",
-      // "UCwWhs_6x42TyRM4Wstoq8HA",
+      //"UCVTyTA7-g9nopHeHbeuvpRA",
+      //"UCwWhs_6x42TyRM4Wstoq8HA",
       "UCMtFAi84ehTSYSE9XoHefig",
     ];
     const requests = channels_ids.map((id) =>
@@ -42,12 +49,13 @@ const AppStateProvider = (props) => {
   };
   //Loads and sorts videos from selected channels - each selected channel async in parallel
   const handleGetVideos = function () {
-    const allChannelsSelected = state.channels.reduce(
-      (total, current) => total && current.selected,
-      true
+    const allChannelsUnselected = !state.channels.reduce(
+      (total, current) => total || current.selected,
+      false
     );
+    dispatch({ type: CLEAR_VIDEOS });
     state.channels.forEach((current) => {
-      if (allChannelsSelected || current.selected) {
+      if (current.selected || allChannelsUnselected) {
         fetch(
           `https://youtube.googleapis.com/youtube/v3/search?part=snippet&channelId=${current.channelId}&maxResults=3&type=video&key=${APIKey}`
         )
@@ -55,24 +63,24 @@ const AppStateProvider = (props) => {
           .then((data) =>
             dispatch({
               type: GET_VIDEOS,
-              payload: data.items.map((current) => current.snippet),
+              payload: data.items.map((current) => ({
+                id: current.id.videoId,
+                ...current.snippet,
+              })),
             })
           );
       }
     });
-    console.log(allChannelsSelected);
   };
 
   //Slect and show video
   const handleSelectVideo = () => {};
 
   //Hide video
-  const handleHideVideo = () => {};
-
-  // loading list of channels when application loads
-  useEffect(() => {
-    handleGetChannels();
-  }, []);
+  const handleHideVideo = (video) => {
+    console.log(video);
+    dispatch({ type: HIDE_VIDEO, payload: video });
+  };
 
   return (
     <AppContext.Provider
@@ -85,6 +93,7 @@ const AppStateProvider = (props) => {
         handleGetVideos,
         handleSelectVideo,
         handleHideVideo,
+        handleGetChannels,
       }}
     >
       {props.children}

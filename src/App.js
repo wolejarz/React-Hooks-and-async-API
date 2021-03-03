@@ -1,7 +1,7 @@
 import React from "react";
 import AppStateProvider from "./context/appStateProvider";
 import ChannelList from "./components/channelList";
-import FetchBar from "./components/fetchBar";
+import SearchBar from "./components/searchBar";
 import VideoDetails from "./components/videoDetails";
 import VideoList from "./components/videoList";
 
@@ -14,7 +14,7 @@ const App = () => {
         <ChannelList />
       </div>
       <div>
-        <FetchBar />
+        <SearchBar />
       </div>
       <div>
         <VideoList />

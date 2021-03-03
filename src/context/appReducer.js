@@ -4,6 +4,7 @@ import {
   GET_VIDEOS,
   SELECT_VIDEO,
   HIDE_VIDEO,
+  CLEAR_VIDEOS,
 } from "./types";
 
 const AppReducer = (state, action) => {
@@ -36,14 +37,33 @@ const AppReducer = (state, action) => {
         videos: newVideosList,
       };
     }
-    case SELECT_VIDEO:
+    case CLEAR_VIDEOS:
       return {
         ...state,
+        videos: [],
       };
-    case HIDE_VIDEO:
+    case SELECT_VIDEO: {
+      console.log(state.hiddenOrWatchedVideos);
       return {
         ...state,
+        selectedVideo: action.payload,
+        hiddenOrWatchedVideos: state.hiddenOrWatchedVideos.concat([
+          action.payload.id,
+        ]),
       };
+    }
+    case HIDE_VIDEO: {
+      console.log(state.hiddenOrWatchedVideos);
+      return {
+        ...state,
+        videos: state.videos.filter(
+          (current) => current.id !== action.payload.id
+        ),
+        hiddenOrWatchedVideos: state.hiddenOrWatchedVideos.concat([
+          action.payload.id,
+        ]),
+      };
+    }
     default:
       return state;
   }
