@@ -8,7 +8,7 @@ let VideoItem = ({ video, id }) => {
   return (
     <div onClick={() => handleSelectVideo(video)}>
       <img
-        style={{ marginRight: "5px", height: "5rem", width: "7rem" }}
+        style={{ marginRight: "5px", height: "3rem" }}
         alt="thumbnail"
         src={video.thumbnails.medium.url}
       />

@@ -5,6 +5,7 @@ import {
   SELECT_VIDEO,
   HIDE_VIDEO,
   CLEAR_VIDEOS,
+  MAX_VIDEOS,
 } from "./types";
 
 const AppReducer = (state, action) => {
@@ -40,7 +41,7 @@ const AppReducer = (state, action) => {
           .sort((a, b) =>
             Date.parse(a.publishTime) > Date.parse(b.publishTime) ? -1 : 1
           )
-          .slice(0, 5),
+          .slice(0, MAX_VIDEOS),
       };
     }
 

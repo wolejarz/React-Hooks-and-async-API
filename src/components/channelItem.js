@@ -8,7 +8,7 @@ const ChannelItem = ({ channel, id }) => {
   return (
     <div>
       <img
-        style={{ marginRight: "5px", height: "5rem", width: "7rem" }}
+        style={{ marginRight: "5px", height: "4rem" }}
         alt="thumbnail"
         src={channel.thumbnails.medium.url}
       />

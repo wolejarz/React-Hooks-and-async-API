@@ -9,6 +9,7 @@ import {
   SELECT_CHANNEL,
   CLEAR_VIDEOS,
   HIDE_VIDEO,
+  MAX_VIDEOS,
 } from "./types";
 
 const AppStateProvider = (props) => {
@@ -30,7 +31,7 @@ const AppStateProvider = (props) => {
   const handleGetChannels = async function () {
     const channels_ids = [
       //"UCVTyTA7-g9nopHeHbeuvpRA",
-      "UCwWhs_6x42TyRM4Wstoq8HA",
+      // "UCwWhs_6x42TyRM4Wstoq8HA",
       "UCMtFAi84ehTSYSE9XoHefig",
     ];
     const requests = channels_ids.map((id) =>
@@ -51,6 +52,44 @@ const AppStateProvider = (props) => {
     dispatch({ type: GET_CHANNELS, payload: resultChannels });
   };
 
+  //gets  N (MAX_VIDEOS) videos from channel - only non-watched or non-hidden videos
+  const getVideosFromChannel = async function (channel) {
+    let videosFromChannel = null;
+    let takeVideosBefore = new Date(Date.now()).toISOString();
+    // console.log(timeVideosBefore);
+    while (
+      videosFromChannel === null ||
+      videosFromChannel.length < MAX_VIDEOS
+    ) {
+      const response = await fetch(
+        `https://youtube.googleapis.com/youtube/v3/search?part=snippet&channelId=${channel.channelId}&maxResults=${MAX_VIDEOS}&order=date&publishedBefore=${takeVideosBefore}&type=video&key=${APIKey}`
+      );
+      const responseInJson = await response.json();
+      const filteredVideos = responseInJson.items.filter((current) =>
+        state.hiddenOrWatchedVideos.indexOf(current.id.videoId) === -1
+          ? true
+          : false
+      );
+      videosFromChannel =
+        videosFromChannel === null
+          ? filteredVideos
+          : filteredVideos.concat(videosFromChannel);
+      //gets publish time of the last video to get only older videos in next fetch
+      takeVideosBefore =
+        videosFromChannel[videosFromChannel.length - 1].snippet.publishTime;
+
+      console.log(takeVideosBefore);
+      console.log(filteredVideos);
+    }
+
+    dispatch({
+      type: GET_VIDEOS,
+      payload: videosFromChannel.map((current) => ({
+        id: current.id.videoId,
+        ...current.snippet,
+      })),
+    });
+  };
   //Loads, removes hidden or watch and sorts videos from selected channels - each selected channel async in parallel
   const handleGetVideos = function () {
     const allChannelsUnselected = !state.channels.reduce(
@@ -59,21 +98,8 @@ const AppStateProvider = (props) => {
     );
     dispatch({ type: CLEAR_VIDEOS });
     state.channels.forEach((current) => {
-      if (current.selected || allChannelsUnselected) {
-        fetch(
-          `https://youtube.googleapis.com/youtube/v3/search?part=snippet&channelId=${current.channelId}&maxResults=3&type=video&key=${APIKey}`
-        )
-          .then((response) => response.json())
-          .then((data) =>
-            dispatch({
-              type: GET_VIDEOS,
-              payload: data.items.map((current) => ({
-                id: current.id.videoId,
-                ...current.snippet,
-              })),
-            })
-          );
-      }
+      if (current.selected || allChannelsUnselected)
+        getVideosFromChannel(current);
     });
   };
 
