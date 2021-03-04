@@ -27,11 +27,12 @@ const AppStateProvider = (props) => {
     dispatch({ type: SELECT_CHANNEL, payload: id });
   };
 
+  //something extra
   //Load hardcoded channels descriptions from Youtube API - waits until all parallel async requests are completed
   const handleGetChannels = async function () {
     const channels_ids = [
       //"UCVTyTA7-g9nopHeHbeuvpRA",
-      // "UCwWhs_6x42TyRM4Wstoq8HA",
+      //"UCwWhs_6x42TyRM4Wstoq8HA",
       "UCMtFAi84ehTSYSE9XoHefig",
     ];
     const requests = channels_ids.map((id) =>
@@ -56,7 +57,6 @@ const AppStateProvider = (props) => {
   const getVideosFromChannel = async function (channel) {
     let videosFromChannel = null;
     let takeVideosBefore = new Date(Date.now()).toISOString();
-    // console.log(timeVideosBefore);
     while (
       videosFromChannel === null ||
       videosFromChannel.length < MAX_VIDEOS
@@ -65,23 +65,27 @@ const AppStateProvider = (props) => {
         `https://youtube.googleapis.com/youtube/v3/search?part=snippet&channelId=${channel.channelId}&maxResults=${MAX_VIDEOS}&order=date&publishedBefore=${takeVideosBefore}&type=video&key=${APIKey}`
       );
       const responseInJson = await response.json();
-      const filteredVideos = responseInJson.items.filter((current) =>
-        state.hiddenOrWatchedVideos.indexOf(current.id.videoId) === -1
-          ? true
-          : false
+      //gets publish time of the last video in the current fetch to get only older videos in the next fetch
+      takeVideosBefore =
+        responseInJson.items[responseInJson.items.length - 1].snippet
+          .publishTime;
+
+      const filteredVideosFromResponse = responseInJson.items.filter(
+        (current) =>
+          state.hiddenOrWatchedVideos.indexOf(current.id.videoId) === -1
+            ? true
+            : false
       );
       videosFromChannel =
         videosFromChannel === null
-          ? filteredVideos
-          : filteredVideos.concat(videosFromChannel);
-      //gets publish time of the last video to get only older videos in next fetch
-      takeVideosBefore =
-        videosFromChannel[videosFromChannel.length - 1].snippet.publishTime;
-
-      console.log(takeVideosBefore);
-      console.log(filteredVideos);
+          ? filteredVideosFromResponse
+          : videosFromChannel.concat(
+              filteredVideosFromResponse.slice(
+                1,
+                filteredVideosFromResponse.length
+              )
+            );
     }
-
     dispatch({
       type: GET_VIDEOS,
       payload: videosFromChannel.map((current) => ({
@@ -90,7 +94,8 @@ const AppStateProvider = (props) => {
       })),
     });
   };
-  //Loads, removes hidden or watch and sorts videos from selected channels - each selected channel async in parallel
+
+  //Loads, removes hidden or watch videos and sorts videos - from selected channels - each selected channel async in parallel
   const handleGetVideos = function () {
     const allChannelsUnselected = !state.channels.reduce(
       (total, current) => total || current.selected,
@@ -108,7 +113,6 @@ const AppStateProvider = (props) => {
 
   //Hide video
   const handleHideVideo = (video) => {
-    console.log(video);
     dispatch({ type: HIDE_VIDEO, payload: video });
   };
 
@@ -118,7 +122,7 @@ const AppStateProvider = (props) => {
         channels: state.channels,
         videos: state.videos,
         selectedVideo: state.selectedVideo,
-        hiddenOrWatchedVideo: state.hiddenOrWatchedVideos,
+        hiddenOrWatchedVideos: state.hiddenOrWatchedVideos,
         handleSelectChannel,
         handleGetVideos,
         handleSelectVideo,

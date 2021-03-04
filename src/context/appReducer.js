@@ -31,10 +31,7 @@ const AppReducer = (state, action) => {
     }
     //filter (watched or hidden) videos and add result to list of videos, limit size to 10
     case GET_VIDEOS: {
-      const filteredNewVideos = action.payload.filter((current) =>
-        state.hiddenOrWatchedVideos.indexOf(current.id) === -1 ? true : false
-      );
-      const allUnsortedVideos = state.videos.concat(filteredNewVideos);
+      const allUnsortedVideos = state.videos.concat(action.payload);
       return {
         ...state,
         videos: allUnsortedVideos

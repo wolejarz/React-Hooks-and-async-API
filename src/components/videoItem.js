@@ -7,14 +7,9 @@ let VideoItem = ({ video, id }) => {
   // console.log(video);
   return (
     <div onClick={() => handleSelectVideo(video)}>
-      <img
-        style={{ marginRight: "5px", height: "3rem" }}
-        alt="thumbnail"
-        src={video.thumbnails.medium.url}
-      />
-      <span>
-        Title: {video.title} Time: {video.publishTime}
-      </span>
+      <div>Title: {video.description}</div>
+      <div>Time: {video.publishTime}</div>
+
       <button onClick={() => handleHideVideo(video)}>Hide Video</button>
     </div>
   );
