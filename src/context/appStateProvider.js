@@ -32,7 +32,7 @@ const AppStateProvider = (props) => {
   const handleGetChannels = async function () {
     const channels_ids = [
       //"UCVTyTA7-g9nopHeHbeuvpRA",
-      //"UCwWhs_6x42TyRM4Wstoq8HA",
+      "UCwWhs_6x42TyRM4Wstoq8HA",
       "UCMtFAi84ehTSYSE9XoHefig",
     ];
     const requests = channels_ids.map((id) =>
@@ -86,26 +86,36 @@ const AppStateProvider = (props) => {
               )
             );
     }
-    dispatch({
-      type: GET_VIDEOS,
-      payload: videosFromChannel.map((current) => ({
-        id: current.id.videoId,
-        ...current.snippet,
-      })),
-    });
+    return videosFromChannel.map((current) => ({
+      id: current.id.videoId,
+      ...current.snippet,
+    }));
   };
 
   //Loads, removes hidden or watch videos and sorts videos - from selected channels - each selected channel async in parallel
-  const handleGetVideos = function () {
+  const handleGetVideos = async function () {
     const allChannelsUnselected = !state.channels.reduce(
       (total, current) => total || current.selected,
       false
     );
     dispatch({ type: CLEAR_VIDEOS });
+    const arrayOfPromises = [];
     state.channels.forEach((current) => {
       if (current.selected || allChannelsUnselected)
-        getVideosFromChannel(current);
+        arrayOfPromises.push(getVideosFromChannel(current));
     });
+    console.log(arrayOfPromises);
+    const results = await Promise.all(arrayOfPromises);
+    const resultsAsOneArray = results.reduce(function (flat, toFlatten) {
+      return flat.concat(toFlatten);
+    }, []);
+    const sortedAndTruncatedResults = resultsAsOneArray
+      .sort((a, b) =>
+        Date.parse(a.publishTime) > Date.parse(b.publishTime) ? -1 : 1
+      )
+      .slice(0, MAX_VIDEOS);
+    console.log(sortedAndTruncatedResults);
+    dispatch({ type: GET_VIDEOS, payload: sortedAndTruncatedResults });
   };
 
   //Slect and show video
