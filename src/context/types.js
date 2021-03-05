@@ -5,6 +5,6 @@ export const SELECT_VIDEO = "SELECT_VIDEO";
 export const HIDE_VIDEO = "HIDE_VIDEO";
 export const CLEAR_VIDEOS = "CLEAR_VIDEOS";
 
-export const APIKey = "AIzaSyBakAWVhAx9ppatXyDN16yrPei-M-NpT_w";
+export const APIKey = "This is place for API KEY";
 
 export const MAX_VIDEOS = 10;
