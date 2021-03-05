@@ -54,7 +54,7 @@ const AppStateProvider = (props) => {
       );
       dispatch({ type: GET_CHANNELS, payload: resultChannels });
     } catch (error) {
-      console.log(error);
+      console.log("API Error");
     }
   };
 
@@ -97,7 +97,7 @@ const AppStateProvider = (props) => {
         ...current.snippet,
       }));
     } catch (error) {
-      console.log(error);
+      console.log("API Error");
     }
   };
 
