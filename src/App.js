@@ -11,16 +11,14 @@ const App = () => {
   return (
     <AppStateProvider>
       <div>
-        <ChannelList />
-      </div>
-      <div>
-        <SearchBar />
-      </div>
-      <div>
-        <VideoList />
-      </div>
-      <div>
-        <VideoDetails />
+        <div className="leftPan">
+          <ChannelList />
+          <SearchBar />
+          <VideoList />
+        </div>
+        <div className="rightPan">
+          <VideoDetails />
+        </div>
       </div>
     </AppStateProvider>
   );

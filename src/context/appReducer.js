@@ -40,16 +40,14 @@ const AppReducer = (state, action) => {
       return {
         ...state,
         videos: [],
+        selectedVideo: "",
       };
-    case SELECT_VIDEO: {
+    case SELECT_VIDEO:
       return {
         ...state,
-        selectedVideo: action.payload,
-        hiddenOrWatchedVideos: state.hiddenOrWatchedVideos.concat([
-          action.payload.id,
-        ]),
+        selectedVideo: action.payload.id,
       };
-    }
+
     case HIDE_VIDEO: {
       return {
         ...state,

@@ -6,18 +6,23 @@ const ChannelItem = ({ channel, id }) => {
   const { handleSelectChannel } = appContext;
 
   return (
-    <div>
-      <img
-        style={{ marginRight: "5px", height: "4rem" }}
-        alt="thumbnail"
-        src={channel.thumbnails.medium.url}
-      />
-      <span>{channel.title}</span>
+    <div className="Item">
+      <div className="ItemProp">
+        <img
+          style={{ marginRight: "5px", height: "4rem" }}
+          alt="thumbnail"
+          src={channel.thumbnails.medium.url}
+        />
+        {channel.title}
+      </div>
       <input
+        className="checkbox"
         type="checkbox"
+        id="check1"
         onChange={() => handleSelectChannel(id)}
         checked={channel.selected}
       />
+      <label htmlFor="check1">Select</label>
     </div>
   );
 };

@@ -4,12 +4,12 @@ import AppContext from "../context/appContext";
 let VideoItem = ({ video, id }) => {
   const appContext = useContext(AppContext);
   const { handleSelectVideo, handleHideVideo } = appContext;
-  // console.log(video);
   return (
-    <div onClick={() => handleSelectVideo(video)}>
-      <div>Title: {video.description}</div>
-      <div>Time: {video.publishTime}</div>
-
+    <div className="Item">
+      <div className="ItemProp" onClick={() => handleSelectVideo(video)}>
+        <div>Description: {video.description}</div>
+        <div>Date: {video.publishTime.slice(0, 16)}</div>
+      </div>
       <button onClick={() => handleHideVideo(video)}>Hide Video</button>
     </div>
   );
