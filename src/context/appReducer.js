@@ -5,7 +5,6 @@ import {
   SELECT_VIDEO,
   HIDE_VIDEO,
   CLEAR_VIDEOS,
-  MAX_VIDEOS,
 } from "./types";
 
 const AppReducer = (state, action) => {
@@ -31,14 +30,9 @@ const AppReducer = (state, action) => {
     }
     //filter (watched or hidden) videos and add result to list of videos, limit size to 10
     case GET_VIDEOS: {
-      const allUnsortedVideos = state.videos.concat(action.payload);
       return {
         ...state,
-        videos: allUnsortedVideos
-          .sort((a, b) =>
-            Date.parse(a.publishTime) > Date.parse(b.publishTime) ? -1 : 1
-          )
-          .slice(0, MAX_VIDEOS),
+        videos: action.payload,
       };
     }
 
