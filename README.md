@@ -5,7 +5,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 
 ## Project reads description of 3 hardcoded channels.
-## User can which channel is searchable.
+## User can select which channel is searchable.
 ## After search list of videos os displayed.
 ## User can hide or watch video.
 ## It's necessary to eneter Youtube API key in the file ./src/context/types.js
